@@ -36,7 +36,8 @@ class ToyManager:
             self.available.append(toy)
 
 # Note: ToyManager doesn't do any checking of toys being 
-# returned, 
+# returned, so it would be possible to check out a scooter
+# and return a stick in its place, for example.
 
 class Toy:
     """Context manager that represents a toy removed
