@@ -1,0 +1,25 @@
+Debugging challenge from Lecture 10:
+
+`letterhist.py` is supposed to display a histogram of first letters of words in
+a file whose name is given as the first command line argument.
+
+The current implementation (after debugging in lecture 10) works if the words
+are written using the letters A-Z and a-z.  However, it has this list of
+possible letters hard-coded, which might be limiting if the program was going to
+be applied to lists of words in languages that use other characters.
+
+Here is a small debugging challenge related to that issue:
+
+1) Revise `letterhist.py` to not use a specific list of possible letters, so
+that is can handle any list of words for which Python's `str.lower()` works on
+the first letters.
+
+2) If you use Windows, figure out why `letterhist.py` raises an exception when
+run on `words4.txt` (a list of words in Russian) even after issue (1) is fixed.
+But if you use Mac or Linux, then it will probably work on `words4.txt` as soon
+as you fix (1).  (Hint: There is relevant information in MCS 260 Lecture 29:
+https://www.dumas.io/teaching/2020/fall/mcs260/slides/lecture29.html)
+
+Item (2) is a little beyond the scope of MCS 275, but was included here because
+it involves a bug that generates a longer traceback, including source files in
+the standard library.
