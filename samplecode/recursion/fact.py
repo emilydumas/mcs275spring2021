@@ -3,14 +3,17 @@
 
 def fact(n):
     """Factorial of nonnegative integer `n`"""
-    print("fact({}) started".format(n))
     if n <= 1:
-        print("n={} so fact() returns answer immediately".format(n))
         return 1
-    print("Making recursive call")
     x = fact(n-1)
-    print("fact({}) finished".format(n))
     return n*x
+
+def fact_iterative(n):
+    """Factorial, iteratively"""
+    accum = 1
+    for k in range(2,n+1):
+        accum *= k
+    return accum
 
 if __name__=="__main__":
     import sys
@@ -18,4 +21,5 @@ if __name__=="__main__":
         n = int(sys.argv[1])
     else:
         n = 5
-    print("{}! = {}".format(n,fact(n)))
+    print("{}! = {} (iterative)".format(n,fact_iterative(n)))
+    print("{}! = {} (recursive)".format(n,fact(n)))
