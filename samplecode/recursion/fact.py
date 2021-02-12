@@ -1,5 +1,5 @@
 """Factorial implemented with recursion"""
-# MCS 275 Spring 2021 Lecture 12
+# MCS 275 Spring 2021 Lecture 12, 13
 
 def fact(n):
     """Factorial of nonnegative integer `n`"""
