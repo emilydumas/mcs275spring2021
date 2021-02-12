@@ -1,24 +1,22 @@
 """Fibonacci numbers implemented with recursion"""
-# MCS 275 Spring 2021 Lecture 12
+# MCS 275 Spring 2021 Lecture 12, 13
 
-import decs
+import decs  # provides timing and other decorators
 
-def fib(n):
+def fib_recursive(n):
     """nth fibonacci number"""
     if n <= 1:
         return n
-    return fib(n-1) + fib(n-2)
+    return fib_recursive(n-1) + fib_recursive(n-2)
 
 def fib_iterative(n):
     """nth fibonacci number (iteratively)"""
     if n <= 1:
         return n
-    # TODO: Convert this to a version that
-    # only ever stores two Fibonacci numbers.
-    L = [1,1]
-    while len(L) < n:
-        L.append(L[-1]+L[-2])
-    return L[-1]
+    x,y = 1,1 # store two consecutive Fib numbers
+    for _ in range(n-2):
+        x,y = y,x+y # replace (F_{k-1},F_k) with (F_k,F_{k+1})
+    return y
 
 if __name__=="__main__":
     import sys
@@ -27,11 +25,16 @@ if __name__=="__main__":
     else:
         n = 5
 
-    fib_timed = decs.timed(fib) # timed version
-    fib_iterative_timed = decs.timed(fib_iterative) # timed version
+    print("TIMING:")
+    # In case the recursive one takes too long, we allow
+    # it to be cancelled with Control-C
+    try:
+        result_recursive = decs.timed(fib_recursive)(n)
+    except KeyboardInterrupt:
+        print("fob_recursive({}) total time: unknown (interrupted)".format(n))
+        result_recursive = "unknown (interrupted)"
+    result_iterative = decs.timed(fib_iterative)(n)
 
-    result = fib_timed(n)
-    result_iterative = fib_iterative_timed(n)
-
-    print("fib({}) = {} (recursive)".format(n,result))
-    print("fib({}) = {} (iterative)".format(n,result_iterative))
+    print("RESULTS:")
+    print("fib_recursive({}) = {}".format(n,result_recursive))
+    print("fib_iterative({}) = {}".format(n,result_iterative))
