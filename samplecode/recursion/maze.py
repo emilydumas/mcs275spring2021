@@ -190,13 +190,33 @@ class PrimRandomMaze(Maze):
                 F.append((x2,y2))
         return F
 
+class MazeExample1(Maze):
+    """7x7 example maze from lecture 15"""
+    def __init__(self):
+        """Set blocked cells for 7x7 example from lecture 15"""
+        super().__init__(xsize=7, ysize=7, start=(1,1), goal=(5,5))
+        self.apply_border()
+        for x,y in [ (2,1), (2,2), (3,2), (4,2), (1,4), (2,4), (4,4), (5,4) ]:
+            self.set_blocked(x,y)
+
 def tohexcolor(rgbtuple):
     """Convert 8-bit RGB color tuple to hex color"""
     r,g,b = rgbtuple
     return "#{:02x}{:02x}{:02x}".format(r,g,b)
 
 if __name__=="__main__":
-    import maze
-    M = maze.PrimRandomMaze(31,31)
-    M.save_png("out.png",scale=1)
-    M.save_svg("out.svg")
+    import sys
+    if len(sys.argv) > 1:
+        n = int(sys.argv[1])
+    else:
+        n = 31
+    print("Generating a random {}x{} maze".format(n,n))
+    M = PrimRandomMaze(n,n)
+    M.save_svg("random_maze.svg")
+    print("Saved SVG")
+    try:
+        M.save_png("random_maze.png",scale=10)
+        print("Saved PNG")
+    except ImportError:
+        print("Not saving PNG maze image, because Pillow / PIL was not found.")
+        print("(Install it with a command like 'python3 -m pip install pillow')")
