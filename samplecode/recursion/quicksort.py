@@ -1,12 +1,29 @@
 """Quicksort: another example of divide and conquer"""
 # MCS 275 Spring 2021 Lecture 17
+# Unfinished; we'll implement partition() in Lecture 18!
 # David Dumas
 
-def quicksort(L,start=0,end=None):
+def quicksort(L,start=0,end=None,depth=0):
     """Reorder elements of L so that L[start:end] is sorted."""
+    # Uncomment the line below for verbose output
+    # (this is the only place the `depth` argumen is used
+    #print(" "*depth + "quicksort({})".format(L[start:end]))
     if end == None:
        end = len(L)
-    # TODO: Add code here!
+    if end-start <= 1:
+        # zero or one-element lists are always sorted
+        return
+
+    # Arrange it so that L[m] is a pivot:
+    # Everything less than the pivot is in
+    # L[start:m], and everything greater than
+    # or equal to the pivot is in L[m+1:end]
+    m = partition(L,start,end)
+    
+    # Recursive calls to quicksort will sort
+    # the sublists to either side of the pivot.
+    quicksort(L,start,m,depth+1)
+    quicksort(L,m+1,end,depth+1)
 
 
 def partition(L,start=0,end=None):
