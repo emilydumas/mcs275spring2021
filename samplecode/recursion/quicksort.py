@@ -1,6 +1,5 @@
 """Quicksort: another example of divide and conquer"""
-# MCS 275 Spring 2021 Lecture 17
-# Unfinished; we'll implement partition() in Lecture 18!
+# MCS 275 Spring 2021 Lecture 17 and Lecture 18
 # David Dumas
 
 def quicksort(L,start=0,end=None,depth=0):
@@ -10,6 +9,7 @@ def quicksort(L,start=0,end=None,depth=0):
     #print(" "*depth + "quicksort({})".format(L[start:end]))
     if end == None:
        end = len(L)
+
     if end-start <= 1:
         # zero or one-element lists are always sorted
         return
@@ -32,43 +32,28 @@ def partition(L,start=0,end=None):
     appears before it, and any element greater than or equal to
     the pivot appears after it.  L is modified in place.  The
     final location of the pivot is returned."""
-    # There is a placeholder implementation below that uses
-    # convenient built-in features of Python instead of the
-    # swap-based approach we'll discuss in lecture.  It is
-    # probably best to ignore it for now.
-    # .
-    # .
-    # .
-    # .
-    # .
-    # .
-    # .
-    # .
-    # .
-    # .
-    # .
-    # .
-    # .
-    # .
-    # .
-    # .
-    # .
-    # .
-    # .
-    # .
-    # .
-    # .
-    # .
-    # .
-    # .
-    # .
-    # .
-    # .
-    # .
     if end == None:
         end = len(L)
+
     pivot = L[end-1]
-    first_part = [x for x in L[start:end] if x < pivot]
-    last_part = [x for x in L[start:end-1] if x >= pivot]
-    L[start:end] = first_part + [pivot] + last_part
-    return start+len(first_part)
+    dst = start
+    for src in range(start,end):
+        if L[src] < pivot:
+            L[src], L[dst] = L[dst], L[src]
+            # Reminder:
+            #   x,y = y,x swaps two values in Python
+            #   no need for a temporary variable
+            dst += 1
+    
+    # Put pivot in its correct final place with one
+    # last swap
+    L[end-1], L[dst] = L[dst], L[end-1]
+
+    # Uncomment the next few lines for some verbose debugging output
+    #print("Partitioned: {} {} {}".format(
+    #    L[start:dst],
+    #    L[dst],
+    #    L[dst+1:end]
+    #))
+    
+    return dst
