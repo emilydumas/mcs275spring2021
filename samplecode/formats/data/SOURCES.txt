@@ -1,0 +1,13 @@
+* ri.csv
+USPS Owned Facilities in Rhode Island
+Available from: https://about.usps.com/who/legal/foia/owned-facilities.htm
+
+* ca.csv
+USPS Owned Facilities in California
+Available from: https://about.usps.com/who/legal/foia/owned-facilities.htm
+
+* nasa_earth_assets.json
+NASA API for earth image assets
+Request is for image of 0.025 degree lat/long square centered on UIC campus
+Available from: https://api.nasa.gov/planetary/earth/assets?lat=41.8696&lon=-87.64961&date=2020-09-01&dim=0.025&api_key=DEMO_KEY
+(Making frequent requests to this API requires registering for a free API key.)
