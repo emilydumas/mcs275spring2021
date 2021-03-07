@@ -1,28 +1,52 @@
 """Functions for making visualizations of tree structures"""
 # MCS 275 Spring 2021 - David Dumas
 
-def treeprint(T):
-    """Print a basic text-graphic representation of
-    BST or node `T`"""
-    print(treestr(T))
+def treeprint(T,*args,**kwargs):
+    """
+    Print a basic text-graphic representation of
+    BST or node `T`.  
+    Optional formatting arguments:
+        dots:  Set to False to hide missing nodes
+               (otherwise they are shown as dots)
+        trim:  Set to True to trim empty space and dots
+               from left and right of the tree diagram
+               to make it narrower.
+    """
+    print(treestr(T,*args,**kwargs))
 
-def treestr(T):
-    """Convert BST or node `T` to a text-graphic string"""
+def treestr(T,dots=True,trim=False):
+    """
+    Convert BST or node `T` to a text-graphic string.
+    Optional formatting arguments:
+        dots:  Set to False to hide missing nodes
+               (otherwise they are shown as dots)
+        trim:  Set to True to trim empty space and dots
+               from left and right of the tree diagram
+               to make it narrower.
+    """
     if hasattr(T,"root"):
         root = T.root
     else:
         root = T
     s = ""
     L = level_lists(root)
-    L = [ [node_str(x) for x in row] for row in L ]
+    L = [ [node_str(x,dots=dots) for x in row] for row in L ]
     depth = len(L)
-    maxlen = len(max(L,key=lambda row:max(len(x) for x in row)))
-    final_row_len = (maxlen+1)*(2**depth)-1
+    maxlen = max( max(len(entry) for entry in row) for row in L )
+    final_row_len = (maxlen)*(2**(depth-1))-1
     depth = len(L)
+    lines = []
     for k,row in enumerate(L):
         width = (final_row_len - (2**k-1)) // 2**k
-        s += "\n" + " ".join(x.center(width) for x in row) + "\n"
-    return s[1:]
+        s=" ".join(x.center(width) for x in row)
+        lines.append(s.rstrip())
+    if trim:
+        leading_spaces = min(len(line) - len(line.lstrip(". ")) for line in lines)
+        longest_content = max(len(line.rstrip(". ")) for line in lines)
+        ntrim = max(0,leading_spaces-5)        
+        lines = [ line[ntrim:longest_content+5] for line in lines ]
+    spacers = reversed([ "\n"*(2+i//4) for i in range(len(lines)) ])
+    return "".join( x+y for x,y in zip(lines,spacers) ).rstrip()+"\n"
 
 def level_lists(node,L=None,n=0,idx=0):
     """Convert a tree into a list of lists, where
@@ -40,10 +64,14 @@ def level_lists(node,L=None,n=0,idx=0):
     level_lists(node.right,L,n+1,2*idx+1)
     return L
 
-def node_str(x):
+def node_str(x,dots=True):
     """Convert a node to a string, or convert None to
-    the empty string"""
+    the empty string or dot (depending on the value
+    of the flag `dots`)"""
     if x == None:
-        return ""
+        if dots:
+            return "."
+        else:
+            return " "
     else:
         return str(x)
