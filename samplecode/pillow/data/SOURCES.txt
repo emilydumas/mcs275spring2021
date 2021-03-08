@@ -1,0 +1,10 @@
+* lincoln.jpg
+Portrait of Abraham Lincoln taken Nov 8, 1863
+US Library of Congress
+
+* percy.png
+Navcam photo of front left wheel of Perseverance mars rover (solar day 13)
+https://mars.nasa.gov/resources/25704/multiple-views-of-perseverances-wheels-wiggling/
+
+* teaching-screenshot.bmp
+Screenshot of https://dumas.io/
