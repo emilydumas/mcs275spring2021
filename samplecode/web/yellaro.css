@@ -1,0 +1,21 @@
+body {
+    font-family: "Verdana", sans-serif;
+}
+
+h1 {
+    color: #100000;
+}
+
+span.message-username {
+    color: #808080;
+}
+
+span.message-content {
+    color: #523232;
+}
+
+div.messagebox {
+    border: 1px solid black;
+    padding: 10px;
+    margin-bottom: 1em;
+}
