@@ -1,21 +1,45 @@
 body {
-    font-family: "Verdana", sans-serif;
+    background:#fffbe7;
+    color:#485268;
+    font-family:sans-serif;
+    font-size:18px;
+    margin:auto;
+    max-width:45rem;
 }
-
+    
 h1 {
-    color: #100000;
+    color:#485268;
+    font-family:"Georgia", serif;
+    font-style:italic;
+    margin:13px;
+    text-align:center;
 }
-
+    
 span.message-username {
-    color: #808080;
+    background:#485268;
+    color:#fffced;
+    font-size:80%;
+    font-weight:bold;
+    margin-right:7px;
+    padding:5px;
 }
-
+    
 span.message-content {
-    color: #523232;
+    color:#485268;
+}
+    
+div.messagebox {
+    background:#fffced;
+    border:2px solid #eee6c1;
+    height:500px;
+    margin-bottom:30px;
+    padding:18px;
+}
+    
+div.message {
+    line-height:150%;
 }
 
-div.messagebox {
-    border: 1px solid black;
-    padding: 10px;
-    margin-bottom: 1em;
+div.message + div.message {
+    margin-top:13px;
 }

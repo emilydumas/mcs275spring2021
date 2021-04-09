@@ -1,0 +1,89 @@
+body {
+    background:#e4feff;
+    color:#485268;
+    font-family:"Trebuchet MS", sans-serif;
+    font-size:18px;
+    margin:auto;
+    max-width:45rem;
+}
+
+h1 {
+    color:#485268;
+    font-style:bold;
+    margin:15px;
+    text-align:center;
+}
+
+div.navigation {
+    font-size:75%;
+    margin-bottom:10px;
+    margin-left:10px;
+    margin-top:10px;
+}
+
+div.postbox {
+    background:#f7feff;
+    height:500px;
+    margin-bottom:30px;
+}
+
+div.post {
+    line-height:140%;
+    margin-left:18px;
+    margin-right:18px;
+    padding-bottom:10px;
+    padding-top:10px;
+}
+
+div.post-metadata {
+    color:#96abb4;
+    font-size:70%;
+    line-height:150%;
+}
+
+span.post-score {
+    background:#b4b4b4;
+    color:#ffffff;
+    display:inline-block;
+    font-size:80%;
+    font-weight:bold;
+    margin-right:10px;
+    min-width:30px;
+    padding-left:3px;
+    padding-right:3px;
+    text-align:center;
+    vertical-align:middle;
+}
+
+span.post-content {
+    color:#485268;
+    margin-left:4px;
+}
+
+a.post-plus-button, a.post-minus-button {
+    display:inline-block;
+    font-family:monospace;
+    font-size:110%;
+    font-weight:bold;
+    padding-left:3px;
+    padding-right:3px;
+    vertical-align:middle;
+}
+
+a.post-plus-button {
+    color:#ff0000;
+    text-decoration:none;
+}
+
+a.post-minus-button {
+    color:#0000ff;
+    text-decoration:none;
+}
+
+a.post-plus-button:hover {
+    background:#ffd6d6;
+}
+
+a.post-minus-button:hover {
+    background:#d6d6ff;
+}
