@@ -1,13 +1,17 @@
-from flask import Flask
+from flask import Flask, url_for, request, redirect
 import sqlite3
+import time
 
 app = Flask(__name__)
 
+# Flask automatically handles URLs beginning with /static
+# by looking for files in the /static subdirectory of the
+# applicaiton directory.  We use this to deliver the CSS.
 HEADER="""<!DOCTYPE html>
 <html>
     <head>
         <title>Yellaro</title>
-        <link rel="stylesheet" href="yellaro.css">
+        <link rel="stylesheet" href="/static/yellaro.css">
     </head>
 
     <body>
@@ -19,9 +23,18 @@ HEADER="""<!DOCTYPE html>
 FOOTER="""</div>
 
         <div>
-            <div>User: ________</div>
-            <div>Message: __________</div>
-            <div>[post]</div>
+            <form action="/post" method="post">
+                <div>
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username">
+                </div>
+                <div>
+                    <label for="message">Message:</label>
+                    <input type="text" id="message" name="message">
+                </div>
+                <input type="submit" value="Post">
+            </form>
+            
         </div>
     </body>
 </html>
@@ -51,6 +64,25 @@ def message_feed_html():
     con.close()
     # return the complete HTML document
     return HEADER + feed + FOOTER
+
+@app.route("/post",methods=["GET","POST"])
+def create_message():
+    """Receive form data and add a row to the database"""
+    # Whether called after HTTP GET or POST, the form fields
+    # are available with `flask.request.values.get(fieldname)`
+    # Since we used `from flask import request` earlier, we 
+    # can shorten this to `request.values(fieldname)`
+    con = get_db()
+    con.execute("INSERT INTO messages (sender,content,ts) VALUES (?,?,?);",
+        (
+            request.values.get("username"), # form field username -> DB column sender
+            request.values.get("message"),  # form field message  -> DB column content
+            time.time()
+        )
+    )
+    con.commit()
+    con.close()
+    return redirect("/")
 
 if __name__=="__main__":
     app.run()
