@@ -41,6 +41,21 @@ div.post-metadata {
     line-height:150%;
 }
 
+div.compose-form {
+    margin-top:30px;
+}
+
+div.compose-form div {
+    margin-top:8px;
+    margin-bottom:8px;
+}
+
+div.compose-form input {
+    font-family:"Trebuchet MS", sans-serif;
+    font-size:15px;
+    padding:5px;
+}
+
 span.post-score {
     background:#b4b4b4;
     color:#ffffff;
