@@ -32,10 +32,10 @@ div.messagebox {
     background:#fffced;
     border:2px solid #eee6c1;
     height:500px;
-    margin-bottom:30px;
     padding:18px;
 }
-    
+
+
 div.message {
     line-height:150%;
 }
@@ -43,3 +43,28 @@ div.message {
 div.message + div.message {
     margin-top:13px;
 }
+
+div.message-compose-form {
+    margin-top: 25px;
+    vertical-align: top;
+}
+
+div.refresh-form {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+div.message-compose-form label {
+    font-size: 80%;
+}
+
+div.message-compose-form div {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    vertical-align: middle;
+}
+
+.fullwidth {
+    width: 100%;
+}
+
