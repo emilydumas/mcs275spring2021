@@ -1,3 +1,6 @@
+# MCS 275 Spring 2021 - David Dumas
+# Lecture 36 and 37
+"""Simple chat web app"""
 from flask import Flask, url_for, request, redirect
 import sqlite3
 import time

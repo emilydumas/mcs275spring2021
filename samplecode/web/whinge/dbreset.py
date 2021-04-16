@@ -1,4 +1,4 @@
-# MCS 275 Spring 2021 Lecture 36
+# MCS 275 Spring 2021 Lecture 38
 # vote app (Whinge) database creation/reset
 
 import sqlite3

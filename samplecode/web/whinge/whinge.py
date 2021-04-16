@@ -1,3 +1,6 @@
+# MCS 275 Spring 2021 - David Dumas
+# Lecture 38
+"""Submit and vote web app"""
 from flask import Flask, url_for, request, redirect
 import sqlite3
 import datetime
@@ -54,12 +57,19 @@ def post_div(row):
     return """
 <div class="post">
     <div class="post-main">
-        <span class="post-score">{0}</span><a class="post-plus-button" href="http://example.com">+</a><a class="post-minus-button" href="http://example.com">-</a><span class="post-content">{1}</span>
+        <span class="post-score">{0}</span><a class="post-plus-button" href="{4}">+</a><a class="post-minus-button" href="{5}">-</a><span class="post-content">{1}</span>
     </div>
     <div class="post-metadata">
         Submitted by <span class="post-author">{2}</span> at <span class="post-timestamp">{3}</span>
     </div>
-</div>""".format(row["score"],row["content"],row["submitter"],timestr)
+</div>""".format(
+    row["score"],
+    row["content"],
+    row["submitter"],
+    timestr,
+    url_for("score_plus_one",postid=row["postid"]),
+    url_for("score_minus_one",postid=row["postid"])
+)
 
 @app.route("/")
 def redirect_top():
@@ -101,6 +111,37 @@ def create_post():
     # TODO: Handle possibility of failed INSERT
 
     # Send them back to the main page
+    return redirect(url_for("display_top"))
+
+@app.route("/plus")   # /plus?postid=15 means add 1 to score for postid 15
+def score_plus_one():
+    """Find a post by `postid` (given as query parameter) and
+    increase its score by one."""
+    # Retrieve the query parameter postid
+    postid = request.values.get("postid")
+    con = get_db()
+    con.execute("""
+    UPDATE posts SET score=score+1 WHERE postid=?;
+    """,
+    (postid,))
+    con.commit()
+    con.close()
+    return redirect(url_for("display_top"))
+
+@app.route("/minus")
+def score_minus_one():
+    """Find a post by `postid` (given as query parameter) and
+    decrease its score by one."""
+    # TODO: Avoid duplicated code with score_plus_one; have
+    # both call a single add_to_score function.
+    postid = request.values.get("postid")
+    con = get_db()
+    con.execute("""
+    UPDATE posts SET score=score-1 WHERE postid=?;
+    """,
+    (postid,))
+    con.commit()
+    con.close()
     return redirect(url_for("display_top"))
 
 if __name__=="__main__":
