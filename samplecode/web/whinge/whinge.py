@@ -72,7 +72,7 @@ def post_div(row):
 )
 
 @app.route("/")
-def redirect_top():
+def root_redirect():
     """Root resource redirects to the top posts display"""
     return redirect(url_for("display_top"))
 
