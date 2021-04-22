@@ -1,0 +1,375 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Lec 22: set and defaultdict</title>
+
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css">
+<!-- web stylesheet -->
+    <link rel="stylesheet" href="dist/theme/moon.css" id="theme">
+    <link rel="stylesheet" href="plugin/highlight/monokai.css" id="highlight-theme">
+<!-- /web stylesheet -->
+
+<!-- web stylesheet customizations -->
+<style type="text/css">
+p { text-align: left; }
+p.center { text-align: center; }
+p.footnote { font-size:60%;}
+p.caption { font-size:40%;}
+span.input { background: #555; }
+.reveal strong,
+.reveal b {
+  color: #eee8d5;
+  font-weight: bold; }
+i { font-style: italic; }
+</style>
+<!-- /web stylesheet customizations -->
+
+<style type="text/css">
+.container{
+    display: flex;
+}
+.col{
+    flex: 1;
+}
+table.nh tr td {
+    border: 0;
+}
+.surround { 
+border: 2px solid #f00;
+background: inherit;
+}
+figure img  { margin: 0 !important; }
+figcaption { font-size: 40%; margin{} 0;}
+section { text-align: left; }
+section h1, section h2, section h3, section h4, section h5, section figure { text-align: center; }
+ul.wide li, ol.wide li { margin-bottom: 0.5em; }
+p { text-align: left; }
+p.center { text-align: center; }
+img.tight {
+    margin: 0;
+}
+section.semicondensed p, p.semicondensed, section.semicondensed h1,h2,h3,h4,h5,h6, section.semicondensed > ul, section.semicondensed > ol, ul.semicondensed, ol.semicondensed { font-size: 80%; }
+section.semicondensed table { font-size: 80%; }
+section.condensed p, section.condensed > ul, section.condensed > ol { font-size: 60%; }
+</style>
+
+</head>
+
+<body>
+<div class="reveal">
+<div class="slides">
+
+<section>
+    <h1>Lecture 22</h1>
+    <h2>set and defaultdict</h2>
+    <p class="center">
+        MCS 275 Spring 2021<br>
+        David Dumas
+    </p>    
+</section>
+
+<section>
+    <h3>Lecture 22: set and defaultdict</h3>
+    <p>Course bulletins:</p>
+    <ul class="wide">
+        <li>I hope to have Project 3 ready by Monday.  It is due March 19.</li>
+        <li>Thursday discussion students: Please attempt problem 1 of Worksheet 8 before discussion.</li>
+    </ul>
+</section>
+
+<section>
+    <h2>Plan</h2>
+    <ul class="wide">
+        <li>Wrap up trees unit</li>
+        <li>Start language features unit</li>
+    </ul>
+</section>
+
+
+<section>
+    <h2>Named traversals</h2>
+
+    <p>The three most-often used recursive traversals:</p>
+
+    <ul class="wide">
+        <li><strong>preorder</strong> - Node, left, right.  Used to copy BSTs.</li>
+        <li><strong>postorder</strong> - Left, right, node.  Used to delete BSTs.</li></li>
+        <li><strong>inorder</strong> - Left, node, right.  Used to turn BST into sorted list.</li>
+    </ul>
+    <p>Note: They <i>all</i> visit left child before right child.</p>
+</section>
+
+<section>
+    <h2>Preorder traversal</h2>
+   
+    <div class="r-stack">
+        <img width=70% src="images/preorder09.png">
+        <img width=70% src="images/preorder08.png" class="fragment">
+        <img width=70% src="images/preorder07.png" class="fragment">
+        <img width=70% src="images/preorder06.png" class="fragment">
+        <img width=70% src="images/preorder05.png" class="fragment">
+        <img width=70% src="images/preorder04.png" class="fragment">
+        <img width=70% src="images/preorder03.png" class="fragment">
+        <img width=70% src="images/preorder02.png" class="fragment">
+        <img width=70% src="images/preorder01.png" class="fragment">
+    </div>
+    <p class="center"><strong>node</strong>, left, right</p>
+</section>
+
+<section>
+    <h2>Preorder traversal</h2>
+
+    <p>Typical use: Make a copy of the tree.</p>
+
+    <p>Insert the keys into an empty BST in this order to recreate the original tree.</p>
+</section>
+
+<section>
+    <div class="r-stack">
+        <img width=70% src="images/preorder-build-08.png">
+        <img width=70% src="images/preorder-build-07.png" class="fragment">
+        <img width=70% src="images/preorder-build-06.png" class="fragment">
+        <img width=70% src="images/preorder-build-05.png" class="fragment">
+        <img width=70% src="images/preorder-build-04.png" class="fragment">
+        <img width=70% src="images/preorder-build-03.png" class="fragment">
+        <img width=70% src="images/preorder-build-02.png" class="fragment">
+        <img width=70% src="images/preorder-build-01.png" class="fragment">
+        <img width=70% src="images/preorder00.png" class="fragment">
+    </div>
+</section>
+
+<section>
+    <h2>Postorder traversal</h2>
+
+    <div class="r-stack">
+        <img width=70% src="images/postorder09.png">
+        <img width=70% src="images/postorder08.png" class="fragment">
+        <img width=70% src="images/postorder07.png" class="fragment">
+        <img width=70% src="images/postorder06.png" class="fragment">
+        <img width=70% src="images/postorder05.png" class="fragment">
+        <img width=70% src="images/postorder04.png" class="fragment">
+        <img width=70% src="images/postorder03.png" class="fragment">
+        <img width=70% src="images/postorder02.png" class="fragment">
+        <img width=70% src="images/postorder01.png" class="fragment">
+    </div>    
+    <p class="center">left, right, <strong>node</strong></p>
+</section>
+
+<section>
+    <h2>Postorder traversal</h2>
+
+    <p>Typical use: Delete the tree.</p>
+
+    <p>If you delete keys in postorder, then you will only ever be removing nodes without children.</p>
+</section>
+
+<section>
+    <div class="r-stack">
+        <img width=70% src="images/postorder00.png">
+        <img width=70% src="images/postorder-delete-01.png" class="fragment">
+        <img width=70% src="images/postorder-delete-02.png" class="fragment">
+        <img width=70% src="images/postorder-delete-03.png" class="fragment">
+        <img width=70% src="images/postorder-delete-04.png" class="fragment">
+        <img width=70% src="images/postorder-delete-05.png" class="fragment">
+        <img width=70% src="images/postorder-delete-06.png" class="fragment">
+        <img width=70% src="images/postorder-delete-07.png" class="fragment">
+        <img width=70% src="images/postorder-delete-08.png" class="fragment">
+    </div>    
+</section>
+
+<section>
+    <h2>Inorder traversal</h2>
+
+    <div class="r-stack">
+        <img width=70% src="images/inorder09.png">
+        <img width=70% src="images/inorder08.png" class="fragment">
+        <img width=70% src="images/inorder07.png" class="fragment">
+        <img width=70% src="images/inorder06.png" class="fragment">
+        <img width=70% src="images/inorder05.png" class="fragment">
+        <img width=70% src="images/inorder04.png" class="fragment">
+        <img width=70% src="images/inorder03.png" class="fragment">
+        <img width=70% src="images/inorder02.png" class="fragment">
+        <img width=70% src="images/inorder01.png" class="fragment">
+    </div>    
+    <p class="center">left, <strong>node</strong>, right</p>
+</section>
+
+<section>
+    <h2>Inorder traversal</h2>
+
+    <p>Typical use: Turn a BST into a sorted list of keys.</p>
+</section>
+
+<section>
+    <h2>Last words on binary trees</h2>
+    <ul>
+        <li>BSTS make a lot of data accessible in a few "hops" from the root.</li>
+        <li>They are a good choice for mutable data structures involving search operations.</li>
+        <li>Deletion of a node is an important feature we didn't implement. (Take MCS 360!)</li>
+    </ul>
+</section>
+
+<section>
+<ul>
+    <li>Unbalanced trees are less efficient.</li>
+</ul>
+<div class="r-stack">
+    <img width=70% src="images/tree-balanced.png">
+    <img width=70% src="images/tree-unbalanced.png" class="fragment">
+</div>
+<p class="footnote">MCS 360 usually covers rebalancing operations.</p>
+</section>
+
+<section>
+    <h2>Set</h2>
+    <p>Python's built-in type <code>set</code> represents an unordered collection of distinct objects.</p>
+    <p>Elements can be any <i>hashable</i> object.  This is the same restriction as <code>dict</code> keys.  E.g.</p>
+    <p>Allowed: <code>bool, int, float, str, tuple</code></p>
+    <p>Not allowed: <code>list, set</code></p>
+</section>
+
+<section>
+    <h2>Set usage</h2>
+    <pre><code class="python">S = { 4, 8, 15, 16, 23, 42 } # Set literal
+S = set()  # New empty set
+S.add(5)   # S is {5}
+S.add(10)  # S is {5,10}
+8 in S   # False
+5 in S   # True
+S.discard(1)  # Does nothing
+S.remove(1)   # Raises KeyError
+S.remove(5)   # Now S is {10}
+S.pop()  # Remove and return one element
+for x in S:  # sets are iterable
+    print(x)
+</code></pre>
+</section>
+
+<section>
+    <h2>Set operations</h2>
+    <p>Binary operations returning new sets:</p>
+    <pre><code class="python" data-trim>
+S | S2  # Evaluates to union of sets
+S & S2  # Evaluates to intersection of sets
+S.union(iterable)        # Like | but allows any iterable
+S.intersection(iterable) # Like & but allows any iterable
+</code></pre>
+<p class="footnote">Note: An earlier version of the slides claimed incorrectly that <code>&</code> and <code>|</code> allow arbitrary iterables.  The methods <code>.union</code> and <code>.intersection</code> allow this, but the overloaded operators require the other operand to also be a set.</p>
+</section>
+
+<section>
+    <h2>Set mutations</h2>
+    <p>Operations that modify a set <code>S</code> based on contents of another collection.</p>
+    <pre><code class="python" data-trim>
+        # adds elements of iterable to S
+        S.update(iterable) 
+        
+        # remove anything from S that is NOT in the iterable
+        S.intersection_update(iterable) 
+        
+        # remove anything from S that is in the iterable
+        S.difference_update(iterable) 
+</code></pre>
+</section>
+
+<section>
+    <h2>More about set</h2>
+    <p><code>set</code> has lots of other features that are described in the <a href="https://docs.python.org/3/library/stdtypes.html#set">documentation</a>.</p>
+</section>
+
+<section>
+    <p>Python's <code>set</code> is basically a dictionary without values.</p>
+    <p>For large collections, it is much faster than using a list.</p>
+    <p>Appropriate whenever order is not important, and items cannot appear multiple times.</p>
+</section>
+
+<section>
+    <h2>Histogram</h2>
+    <p>You want to know how many times each character appears in a string.</p>
+    <pre class="python"><code>hist = dict()
+for c in s:
+    hist[c] += 1</code></pre>
+<p>This won't work.  Why?</p>
+</section>
+
+<section>
+    <h2>defaultdict</h2>
+    <p>Built-in module <code>collections</code> contains a class <code>defaultdict</code> that works like a dictionary, but
+        if a key is requested that doesn't exist, it creates it and assigns a default value.</p>
+
+    <pre class="python"><code>import collections
+hist = collections.defaultdict(int)
+for c in s:
+    hist[c] += 1</code></pre>
+    <p>This works!</p>
+</section>
+
+<section>
+    <p>The <code>defaultdict</code> constructor takes one argument, a function <code>default_factory</code>.</p>
+    <p><code>default_factory</code> is called to make default values for keys when needed.</p>
+    <p>Common examples with built-in factories:</p>
+    <pre class="python"><code>defaultdict(list)  # default value [] as returned by list()
+defaultdict(int)   # default value 0, as returned by int()
+defaultdict(float) # default value 0.0, as returned by float()
+defaultdict(str)   # default value "", as returned by str()</code></pre>
+</section>
+
+<section class="condensed">
+   <h3>References</h3>
+
+   <ul class="wide">
+    <li>
+        In optional course texts:
+        <ul>
+            <li><a href="https://runestone.academy/runestone/books/published/pythonds/index.html"><i>Problem Solving with Algorithms and Data Structures using Python</i> by Miller and Ranum</a>, discusses binary trees in <a href="https://runestone.academy/runestone/books/published/pythonds/Trees/toctree.html">Chapter 7</a>.</li>
+            <li><i>Lutz</i> discusses sets in Chapter 5, in the subsection "Other Numeric Types" (even though there is nothing "numeric" about sets).</li>
+        </ul>
+    </li>
+
+    <li>
+        Elsewhere:
+        <ul>
+            <li><a href="https://mitpress.mit.edu/books/introduction-algorithms-third-edition">Cormen, Leiserson, Rivest, and Stein</a> discusses graph theory and trees in Appendices B.4 and B.5, and binary search trees in Chapter 12.
+        </ul>
+    </li>
+    
+    </ul>
+ <p></p>
+    <h3>Revision history</h3>
+        <ul>
+            <li>2021-03-11 Correction: set operations &amp; and | don't allow non-set iterables</li>
+            <li>2021-03-02 Initial publication</li>
+        </ul>
+
+</section>
+
+</div>
+
+</div>
+        <script src="dist/reveal.js"></script>
+        <script src="plugin/notes/notes.js"></script>
+        <script src="plugin/markdown/markdown.js"></script>
+        <script src="plugin/highlight/highlight.js"></script>
+        <script src="plugin/math/math.js"></script>
+        <script>
+            Reveal.initialize({
+                math: {
+                    hash: true,
+                    mathjax: 'https://cdn.jsdelivr.net/gh/mathjax/mathjax@2.7.8/MathJax.js',
+                    config: 'TeX-AMS_HTML-full',
+                    // pass other options into `MathJax.Hub.Config()`
+                    TeX: { Macros: { RR: "{\\bf R}" } }
+                },
+                history: true,
+                transition: 'none',
+                progress: false,
+                plugins: [ RevealMath, RevealMarkdown, RevealHighlight, RevealNotes ]
+            });
+        </script>
+    </body>
+</html>
+
+

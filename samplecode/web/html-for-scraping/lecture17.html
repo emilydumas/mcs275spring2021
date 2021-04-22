@@ -1,0 +1,320 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Lec 17: Quicksort</title>
+
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css">
+<!-- web stylesheet -->
+    <link rel="stylesheet" href="dist/theme/moon.css" id="theme">
+    <link rel="stylesheet" href="plugin/highlight/monokai.css" id="highlight-theme">
+<!-- /web stylesheet -->
+
+<!-- web stylesheet customizations -->
+<style type="text/css">
+p { text-align: left; }
+p.center { text-align: center; }
+p.footnote { font-size:60%;}
+p.caption { font-size:40%;}
+span.input { background: #555; }
+.reveal strong,
+.reveal b {
+  color: #eee8d5;
+  font-weight: bold; }
+i { font-style: italic; }
+</style>
+<!-- /web stylesheet customizations -->
+
+<style type="text/css">
+.container{
+    display: flex;
+}
+.col{
+    flex: 1;
+}
+table.nh tr td {
+    border: 0;
+}
+.surround { 
+border: 2px solid #f00;
+background: inherit;
+}
+figure img  { margin: 0 !important; }
+figcaption { font-size: 40%; margin{} 0;}
+section { text-align: left; }
+section h1, section h2, section h3, section h4, section h5, section figure { text-align: center; }
+ul.wide li, ol.wide li { margin-bottom: 0.5em; }
+p { text-align: left; }
+p.center { text-align: center; }
+img.tight {
+    margin: 0;
+}
+section.semicondensed p, section.semicondensed h1,h2,h3,h4,h5,h6, section.semicondensed > ul,ol { font-size: 80%; }
+section.condensed p, section.condensed > ul, section.condensed > ol { font-size: 60%; }
+</style>
+
+</head>
+
+<body>
+<div class="reveal">
+<div class="slides">
+
+<section>
+    <h1>Lecture 17</h1>
+    <h2>Quicksort</h2>
+    <p class="center">
+        MCS 275 Spring 2021<br>
+        David Dumas
+    </p>    
+</section>
+
+<section>
+    <h3>Lecture 17: Quicksort</h3>
+    <p>Course bulletins:</p>
+    <ul class="wide">
+        <li>Starting with Quiz 6, you will have 48 hours for quizzes (Noon Sunday to Noon Tuesday).</li>
+        <li><a href="https://www.dumas.io/teaching/2021/spring/mcs275/nbview/projects/project2.html">Project 2 description</a> updated with sample data and modules policy.</li>
+        <li>Project 2 due 6pm CST Friday, February 26.</li>
+        <li>Check out the <a href="https://github.com/daviddumas/mcs275spring2021/tree/master/samplecode/recursion">recursion sample code</a>.</li>
+        <li>Worksheet 7 will explore recursive maze solver / generator in more depth.</li>
+    </ul>
+</section>
+
+<section>
+    <h2>Plan</h2>
+    <ul>
+        <li>Discuss mergesort a bit more</li>
+        <li>Introduce quicksort</li>
+        <li>Implement quicksort</li>
+    </ul>
+</section>
+
+<section>
+    <h2>Why discuss algorithms?</h2>
+    <p>Python lists have built-in <code>.sort()</code> method.  Why talk about sorting?</p>
+    <ol class="wide">
+        <li>Study cases of easy-to-explain problems solved in clever ways.</li>
+        <li>See patterns of thinking that work in other settings.</li>
+    </ol>
+</section>
+
+<section>
+    <h2>Mergesort</h2>
+    <p>Last time we discussed and implemented mergesort.</p>
+    <p>History: Developed by von Neumann (1945) and Goldstine (1947).</p>
+    <p><strong>But is it a good way to sort a list?</strong></p>
+</section>
+
+<section>
+    <h2>Efficiency</h2>
+    <p><strong>Theorem:</strong> If you measure the time cost of mergesort in any of these terms</p>
+        <ul style="margin-bottom:0.4em;">
+            <li>Number of comparisons made</li>
+            <li>Number of assignments (e.g. <code>L[i] = x</code> counts as 1)</li>
+            <li>Number of Python statements executed</li>
+        </ul>
+        <p>then the cost to sort a list of length $n$ is less than $C n \log(n)$, for some constant $C$ that only depends on which expense measure you chose.</p>
+    </p>
+</section>
+
+<section>
+    <h2>Asymptotically optimal</h2>
+    <p>$C n \log(n)$ is pretty efficient for an operation that needs to look at all $n$ elements.  It's not linear in $n$, but it only grows a little faster than linear functions.</p>
+    <p>Furthermore, $C n \log(n)$ is the best possible time for comparison sort of $n$ elements (though different methods might have better $C$).</p>
+</section>
+
+<section>
+    <h2>Quicksort</h2>
+
+    <p>Another comparison sort typically implemented using recursion. Developed by Hoare, 1959.</p>
+    <p>Unlike mergesort, it uses very little temporary storage, and only ever <strong>swaps</strong> pairs of elements.</p>
+</section>
+
+<section>
+    <h2>Quicksort summary</h2>
+    <p>Starting with an unsorted list:</p>
+    <ul>
+        <li>If the list has 0 or 1 elements, return immediately.</li>
+        <li>Partition: Choose an element (the <strong>pivot</strong>). Rearrange so elements smaller than the pivot come before it, elements larger than the pivot come after it.</li>
+        <li>Quicksort the part of the list before the pivot.</li>
+        <li>Quicksort the part of the list after the pivot.</li>
+    </ul>
+    <p>It's divide and conquer, but with no merge step.  The hard work is instead in partitioning.</p>
+</section>
+
+<section>
+    <h2>Quicksort visualization</h2>
+    <div style="position:relative; width:960px; height: 300px; margin: 0 auto 0 0.8em;">
+        <img width="960px;" src="images/quicksort-short-08.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="960px;" src="images/quicksort-short-09.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="960px;" src="images/quicksort-short-10.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="960px;" src="images/quicksort-short-11.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="960px;" src="images/quicksort-short-12.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="960px;" src="images/quicksort-short-13.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="960px;" src="images/quicksort-short-14.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="960px;" src="images/quicksort-short-14b.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="960px;" src="images/quicksort-short-14c.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="960px;" src="images/quicksort-short-15.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="960px;" src="images/quicksort-short-16.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="960px;" src="images/quicksort-short-17.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="960px;" src="images/quicksort-short-18.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="960px;" src="images/quicksort-short-19.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="960px;" src="images/quicksort-short-20.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="960px;" src="images/quicksort-short-21.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="960px;" src="images/quicksort-short-22.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="960px;" src="images/quicksort-short-23.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="960px;" src="images/quicksort-short-23b.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="960px;" src="images/quicksort-short-24.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="960px;" src="images/quicksort-short-25.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="960px;" src="images/quicksort-short-26.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="960px;" src="images/quicksort-short-27.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="960px;" src="images/quicksort-short-28.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="960px;" src="images/quicksort-short-29.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="960px;" src="images/quicksort-short-30.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="960px;" src="images/quicksort-short-31.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="960px;" src="images/quicksort-short-32.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="960px;" src="images/quicksort-short-33.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="960px;" src="images/quicksort-short-34.png" style="position:absolute;top:0;left:0;" />
+      </div>
+</section>
+
+<section>
+    <h2>Assume we have partition</h2>
+
+    <p>For the moment, we'll take the partition step as a &quot;black box&quot;, assuming we already have:</p>
+        <pre class="python"><code>def partition(L,start,end):
+    """Look at L[start:end].  Take the last element as a pivot.
+    Move elements around so that any value less than the pivot 
+    appears before it, and any element greater than or equal to
+    the pivot appears after it.  L is modified in place.  The
+    final location of the pivot is returned."""
+    # TODO: Add code here</code></pre>
+    <p>Note this function uses the last element as a pivot.  Later we'll discuss other options.</p>
+</section>
+
+<section>
+    <h2>Coding time</h2>
+    <p>Let's implement <code>quicksort</code> in Python.</p>
+</section>
+
+<section class="semicondensed">
+    <strong>Algorithm <code>quicksort</code>:</strong>
+    <p><strong>Input:</strong> list <code>L</code> and indices <code>start</code> and <code>end</code>.</p>
+    <p><strong>Goal:</strong> reorder elements of <code>L</code> so that <code>L[start:end]</code> is sorted.</p>
+    <ol class="wide">
+        <li>If <code>(end-start)</code> is less than or equal to 1, return immediately.</li>
+        <li>Otherwise, call <code>partition(L)</code> to partition the list, letting <code>m</code> be the final location of the pivot.
+        <li>Call <code>quicksort(L,start,m)</code> and <code>quicksort(L,m+1,end)</code> to sort the parts of the list on either side of the pivot.</li>
+    </ol>
+</section>
+
+<section>
+    <h2>Partition</h2>
+    <p>How to write <code>partition(L,start,end)</code>?</p>
+    <p>Recall we plan to make a version that uses the last element of <code>L[start:end]</code> as the pivot.</p>
+</section>
+
+<section>
+    <h2>Partition visualization</h2>
+    <div style="position:relative; width:700px; height: 280px; margin-left: auto; margin-right:auto;">
+        <img width="700px;" src="images/partition-00.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-01.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-02b.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-03.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-03b.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-03c.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-03d.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-04.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-05.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-06.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-07.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-08.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-09.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-10.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-11.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-12.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-13.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-14.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-15.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-16.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-17.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-18.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-19.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-20.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-21.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-22.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-23.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-24.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-25.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-26.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-27.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-28.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-29.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-30.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-31.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-32.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-32b.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-32c.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-32d.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-33.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-34.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-35.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-36.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-37.png" style="position:absolute;top:0;left:0;" />
+        <img class="fragment" width="700px;" src="images/partition-38.png" style="position:absolute;top:0;left:0;" />
+    </div>
+</section>
+
+<section class="condensed">
+   <h3>References</h3>
+
+   <ul class="wide">
+    <li>You can refer to the <a href="https://www.dumas.io/teaching/2021/spring/mcs275/slides/lecture13.html#/16">general references about recursion</a> that have appeared in several recent lectures.  The rest of this list is specific to mergesort and quicksort.</li>
+    <li>Making nice visualizations of sorting algorithms is a cottage industry in CS education.  Some you might like to check out:
+        <ul>
+            <li><a href="https://dotink.co/posts/visualizing-sorting-algorithms/">2D visualization through color sorting</a> by Linus Lee</li>
+            <li><a href="https://bl.ocks.org/alexmacy/770f14e11594623320db1270361331dc">Animated bar graph visualization of many sorting algorithms</a> by Alex Macy</li>
+            <li>Slanted line animated visualizations of <a href="https://bl.ocks.org/mbostock/39566aca95eb03ddd526">mergesort</a> and <a href="https://bl.ocks.org/mbostock/e1e1e7e2c360bec054ba">quicksort</a> by Mike Bostock</li>
+        </ul>
+    </li>
+    
+    </ul>
+ <p></p>
+    <h3>Revision history</h3>
+        <ul>
+            <li>2021-02-22 Moved unused slides to Lecture 18 and fix partition visualization</li>
+            <li>2021-02-17 Fix description of partition step in quicksort preview</li>
+            <li>2021-02-17 Initial publication</li>
+        </ul>
+
+</section>
+
+</div>
+
+</div>
+        <script src="dist/reveal.js"></script>
+        <script src="plugin/notes/notes.js"></script>
+        <script src="plugin/markdown/markdown.js"></script>
+        <script src="plugin/highlight/highlight.js"></script>
+        <script src="plugin/math/math.js"></script>
+        <script>
+            Reveal.initialize({
+                math: {
+                    hash: true,
+                    mathjax: 'https://cdn.jsdelivr.net/gh/mathjax/mathjax@2.7.8/MathJax.js',
+                    config: 'TeX-AMS_HTML-full',
+                    // pass other options into `MathJax.Hub.Config()`
+                    TeX: { Macros: { RR: "{\\bf R}" } }
+                },
+                history: true,
+                transition: 'none',
+                progress: false,
+                plugins: [ RevealMath, RevealMarkdown, RevealHighlight, RevealNotes ]
+            });
+        </script>
+    </body>
+</html>
+
+

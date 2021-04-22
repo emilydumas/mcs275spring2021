@@ -1,0 +1,317 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Lec 40: Parsing and scraping HTML</title>
+
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css">
+<!-- web stylesheet -->
+    <link rel="stylesheet" href="dist/theme/moon.css" id="theme">
+    <link rel="stylesheet" href="plugin/highlight/monokai.css" id="highlight-theme">
+<!-- /web stylesheet -->
+
+<!-- web stylesheet customizations -->
+<style type="text/css">
+p { text-align: left; }
+p.center { text-align: center; }
+p.footnote { font-size:60%;}
+section.semicondensed p.footnote { font-size:50%; }
+p.caption { font-size:40%;}
+span.input { background: #555; }
+.reveal strong,
+.reveal b {
+  color: #eee8d5;
+  font-weight: bold; }
+i { font-style: italic; }
+</style>
+<!-- /web stylesheet customizations -->
+
+<style type="text/css">
+.container{
+    display: flex;
+}
+.col{
+    flex: 1;
+}
+table.nh tr td {
+    border: 0;
+}
+.surround { 
+border: 2px solid #f00;
+background: inherit;
+}
+figure img  { margin: 0 !important; }
+figcaption { font-size: 40%; margin: 0;}
+section { text-align: left; }
+section h1, section h2, section h3, section h4, section h5, section figure { text-align: center; }
+ul.wide li, ol.wide li { margin-bottom: 0.5em; }
+p { text-align: left; }
+p.center { text-align: center; }
+img.tight {
+    margin: 0;
+}
+section.semicondensed p, p.semicondensed, section.semicondensed h1,h2,h3,h4,h5,h6, section.semicondensed > ul, section.semicondensed > ol, ul.semicondensed, ol.semicondensed { font-size: 80%; }
+section.semicondensed table { font-size: 80%; }
+section.condensed p, section.condensed > ul, section.condensed > ol, section.condensed table { font-size: 60%; }
+</style>
+
+</head>
+
+<body>
+<div class="reveal">
+<div class="slides">
+
+<section>
+    <h1>Lecture 40</h1>
+    <h2>Parsing and scraping HTML</h2>
+    <p class="center">
+        MCS 275 Spring 2021<br>
+        David Dumas
+    </p>    
+</section>
+
+<section>
+    <h3>Lecture 40: Parsing and scraping HTML</h3>
+    <p>Course bulletins:</p>
+    <ul class="wide">
+        <li><a href="https://www.dumas.io/teaching/2021/spring/mcs275/nbview/projects/project4.html">Project 4</a> is due 6pm CDT Friday April 30.</li>
+        <li>Please install <code>beautifulsoup4</code> with
+        <pre><code class="bash" data-trim>
+            python3 -m pip install beautifulsoup4
+        </code></pre>
+        </li>
+        <li>Notebook: <a href="https://www.dumas.io/teaching/2021/spring/mcs275/nbview/samplecode/web/beautifulsoup-examples.html">beautifulsoup-examples.ipynb</a></li>
+    </ul>
+</section>
+
+<section>
+    <h2>Getting data from the web</h2>
+    <p>HTML is a language for making documents, meant to be displayed to humans.  Avoid having programs read HTML if at all possible.</p>
+    <p>e.g. look for an API that serves the same data in a structured format (CSV, JSON, ...)</p>
+</section>
+
+<section>
+    <p>What do you do if there is no API, and you need to extract information from an HTML document?</p>
+    <p class="footnote" style="margin-top:3em;">Sigh with exasperation, then...</p>
+</section>
+
+<section>
+    <h2>HTML parsing</h2>
+
+    <p><strong>Level 0:</strong> Treat the HTML document as a string and use search operations (<code>str.find</code> or regexes) to locate something you care about, like <code>&lt;title></code>.</p>
+
+    <p>HTML is complicated, and this approach is very error-prone.</p>
+</section>
+
+<section>
+    <h2>HTML parsing</h2>
+
+    <p><strong>Level 1:</strong> Use a <strong>parser</strong> that knows how to recognize start/end tags, attributes, etc., and tell it what to do when it finds them (e.g. call this function...)</p>
+    <p><a href="https://docs.python.org/3/library/html.parser.html"><code>html.parser</code></a> is in the standard library.</p>
+
+    <p>This approach is event-based.  You specify functions to handle things when they are found, but you don't get an overall picture of the entire document.</p>
+</section>
+
+<section>
+    <h2>HTML parsing</h2>
+
+    <p><strong>Level 2:</strong> Use a higher-level HTML data extraction framework like <a href="https://www.crummy.com/software/BeautifulSoup/bs4/doc/">Beautiful Soup</a>, <a href="https://scrapy.org/">Scrapy</a>, or <a href="https://selenium-python.readthedocs.io/">Selenium</a>.</p>
+
+    <p>These frameworks create a data structure that represents the entire document, supporting various kinds of searching, traversal, and extraction.</p>
+</section>
+
+<section>
+    <h2>DOM</h2>
+    <p>The <strong>Document Object Model</strong> or DOM is a language-independent model for representing a HTML document as a tree of nodes.</p>
+    <p>Each node represents part of the document, such as a tag, an attribute, or text appearing inside a tag.</p>
+    <p>The <a href="https://dom.spec.whatwg.org/">formal specification</a> has rules for for naming, accessing, and modifying parts of a document.  JavaScript fully implements this specification.</p>
+</section>
+
+<section>
+    <pre style="font-size:50%"><code class="text" data-trim>
+&lt;html>&lt;head>&lt;title>My title&lt;/title>&lt;/head>&lt;body>&lt;h1>A heading&lt;/h1>
+&lt;a href="https://example.com">Link text&lt;/a>&lt;/body>&lt;/html></code></pre>
+        <figure>
+            <img src="images/dom.png" width="50%">
+            <figcaption>Adapted from DOM illustration by <a href="https://commons.wikimedia.org/wiki/File:DOM-model.svg">Birger Eriksson</a> (CC-BY-SA).</figcaption>
+        </figure>
+</section>
+
+<section>
+    <pre style="font-size:50%"><code class="text" data-trim>&lt;p>I &lt;strong>really&lt;/strong>like Python.&lt;/p></code></pre>
+        <figure>
+            <img src="images/dom2.png" width="50%">
+            <figcaption>Adapted from DOM illustration by <a href="https://commons.wikimedia.org/wiki/File:DOM-model.svg">Birger Eriksson</a> (CC-BY-SA).</figcaption>
+        </figure>
+</section>
+
+<section>
+    <h2>Beautiful Soup</h2>
+    <p>This package provides a module called <code>bs4</code> for turning HTML into a DOM-like data structure.</p>
+    <p>Widely used, e.g. social network Reddit uses it* to select a representative image from a web page when a URL is submitted in a post.</p>
+    <p>Requires an HTML parser.  We'll use <code>html.parser</code> from the standard library (slow but always available).</p>
+    <p class="footnote">* At least that was the case <a href="https://github.com/reddit/reddit/blob/85f9cff3e2ab9bb8f19b96acd8da4ebacc079f04/r2/r2/lib/media.py">in 2014</a>; they may have switched to something else since then.</p>
+</section>
+
+<section>
+    <h2>Minimal soup</h2>
+    <p>Parse HTML file into DOM:</p>
+    <pre><code class="python" data-trim>
+        from bs4 import BeautifulSoup
+
+        with open("lecture40.html") as fobj:
+            soup = BeautifulSoup(fobj,"html.parser")
+    </code></pre>
+</section>
+
+<section>
+<section>
+    <h2>Minimal soup</h2>
+
+    <p>Parse web page into DOM:</p>
+    <pre><code class="python" data-trim>
+        from urllib.request import urlopen
+        from bs4 import BeautifulSoup
+
+        with urlopen("https://example.com/") as response:
+            soup = BeautifulSoup(response,"html.parser")
+    </code></pre>
+    <p>Be careful about the <a href="#ethics">ethics of connecting to web servers from programs</a>.</p>
+</section>
+<section id="ethics">
+<h2>Scraping and spiders</h2>
+<p>A program that extracts data from HTML is a <strong>scraper</strong></p>
+<p>A program that visits all pages on a site is a <strong>spider.</strong></p>
+<p>All forms of automated access should:</p>
+<ul>
+    <li>Allow the site to prioritize human users.</li>
+    <li>Limit frequency of requests.</li>
+    <li>Respect a site's Terms of Service (TOS).</li>
+    <li>Respect the site's <a href="https://en.wikipedia.org/wiki/Robots_exclusion_standard">robots.txt</a> automated access exclusion file, if they have one.</li>
+</ul>
+</section>
+</section>
+
+
+<section>
+    <h2>Minimal soup</h2>
+
+    <p>Parse string into DOM:</p>
+    <pre><code class="python" data-trim>
+        from bs4 import BeautifulSoup
+
+        soup = BeautifulSoup(
+            "<p>That was <strong>durian</strong>?!</p>",
+            "html.parser"
+        )
+    </code></pre>
+</section>
+
+
+<section>
+    <h2>BS4 basics</h2>
+    <pre><code class="python" data-trim>
+        str(soup) # the HTML
+        soup.prettify() # prettier HTML
+        soup.title # first (and only) title tag
+        soup.p  # first p tag
+        soup.find("p") # first p tag (alternative)
+        soup.p.em  # first em tag within the first p tag
+        soup.find_all("a") # list of all a tags
+    </code></pre>
+</section>
+
+<section>
+    <h2>Working with tags</h2>
+    <pre><code class="python" data-trim>
+        str(tag) # HTML for this tag and everything inside it
+        tag.name # name of the tag, e.g. "a" or "ul"
+        tag.attrs # dict of tag's attributes
+        tag["href"] # get a single attribute
+        tag.text # All the text nodes inside tag, concatenated
+        tag.string # If tag has only text inside it, returns that text
+                   # But if it has other tags as well, returns None
+        tag.parent # enclosing tag
+        tag.contents # list of the children of this tag
+        tag.children # iterable of children of this tag
+        tag.banana # first descendant banana tag (sub actual tag name!)
+        tag.find(...) # first descendant meeting criteria
+        tag.find_all(...) # descendants meeting criteria
+        tag.find_next_sibling(...) # next sibling tag meeting criteria
+        </code></pre>
+        </section>
+
+<section>
+    <h2>Searching</h2>
+    <p>Arguments supported by all the <code>find*</code> methods:</p>
+    <pre><code class="python" data-trim>
+        tag.find_all(True) # all descendants
+        tag.find_all("tagname") # descendants by tag name
+        tag.find_all(href="https://example.com/") # by attribute
+        tag.find_all(class_="post") # by class
+        tag.find_all(re.compile("^fig")) # tag name regex match
+        tag.find_all("a",limit=15) # first 15 a tags
+        tag.find_all("a",recursive=False) # all a *children*
+    </code></pre>
+    <p>Also work with <code>find()</code>, <code>find_next_sibling()</code>, ...</p>
+</section>
+
+<section>
+    <h2>Simulating CSS</h2>
+    <p><code>soup.select(SELECTOR)</code> returns a list of tags that match a CSS selector, e.g.</p>
+    <pre><code class="python" data-trim>
+        soup.select(".wide") # all tags of class "wide"
+        
+        # ul tags within divs of class messagebox
+        soup.select("div.messagebox ul")
+        </code></pre>
+    <p>There are many CSS selectors and functions we haven't discussed, so this gives a powerful alternative search syntax.</p>
+    <pre><code class="python" data-trim>
+        # all third elements of unordered lists
+        soup.select("ul > li:nth-of-type(3)")
+    </code></pre>
+</section>
+
+
+<section class="condensed">
+   <h3>References</h3>
+
+   <ul class="wide">
+    <li><a href="https://docs.python.org/3.8/library/urllib.html">urllib documentation</a></li>
+        <li>The <a href="https://www.crummy.com/software/BeautifulSoup/bs4/doc/">Beautiful Soup documentation</a> is beautifully clear.</li>
+       </ul>
+  <p></p>
+     <h3>Revision history</h3>
+         <ul>
+            <li>2021-04-21 Typo fixes, notebook link</li>
+            <li>2021-04-21 Initial publication</li>
+         </ul>
+ </section>
+ 
+</div>
+
+</div>
+        <script src="dist/reveal.js"></script>
+        <script src="plugin/notes/notes.js"></script>
+        <script src="plugin/markdown/markdown.js"></script>
+        <script src="plugin/highlight/highlight.js"></script>
+        <script src="plugin/math/math.js"></script>
+        <script>
+            Reveal.initialize({
+                math: {
+                    hash: true,
+                    mathjax: 'https://cdn.jsdelivr.net/gh/mathjax/mathjax@2.7.8/MathJax.js',
+                    config: 'TeX-AMS_HTML-full',
+                    // pass other options into `MathJax.Hub.Config()`
+                    TeX: { Macros: { RR: "{\\bf R}" } }
+                },
+                history: true,
+                transition: 'none',
+                progress: false,
+                plugins: [ RevealMath, RevealMarkdown, RevealHighlight, RevealNotes ]
+            });
+        </script>
+    </body>
+</html>
