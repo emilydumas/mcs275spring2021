@@ -1,6 +1,6 @@
 """Read a file containing a word list, and display a histogram of
 first letters.  (This is the post-debugging version.)"""
-# MCS 275 Spring 2021 - David Dumas
+# MCS 275 Spring 2021 - Emily Dumas
 # Lecture 10 and 11
 
 # The files "words1.txt", "words2.txt", ... are sample inputs

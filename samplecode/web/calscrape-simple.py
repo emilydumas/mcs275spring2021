@@ -1,6 +1,6 @@
 """Simple scraper to convert UIC academic calendar site to CSV"""
 # MCS 275 Spring 2021 Lecture 41
-# David Dumas
+# Emily Dumas
 
 # This "simple" scraper looks for the table of dates for each Spring and Fall
 # semester listed at

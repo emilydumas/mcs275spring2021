@@ -1,5 +1,5 @@
 # MCS 275 Spring 2021 Lecture 31
-# David Dumas
+# Emily Dumas
 """SQLite hello world: Make a database,
 a table, and a few rows.  Read them back
 and print the results."""

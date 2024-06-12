@@ -1,6 +1,3 @@
-Owned Facility Inventory Report,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,
 District,Fin-Sub,Chrgbl Fin No,PO Name,Unit Name,Property Address,County,City,ST,ZIP Code,Property Status,Ownership,FDB ID (All),AMS Locale Key (All),FDB Facility Type (All),FDB Facility Subtype (All),Building Ownership Description,Land Desc,Space Certified Indicator,Bldg Occu Date,Int Sq Ft
 Greater Boston,431120-G01,431120,BARRINGTON,MAIN OFFICE,200 MIDDLE HWY,BRISTOL,BARRINGTON,RI,02806-9998,Active,Owned,1354095,V25837,Post Office,Main Post Office,"USPS Building, Transferred","USPS Land, Transferred",Yes,6/1/1974,"6,769"
 Greater Boston,432360-G01,432360,COVENTRY,MAIN OFFICE,1550 NOOSENECK HILL RD,KENT,COVENTRY,RI,02816-9998,Active,Owned,1359450,V25859,Post Office,Administrative Post Office (APO),"USPS Building, Const. by USPS","USPS Land, Not Prev. Leased",Yes,7/1/1990,"13,764"

@@ -1,4 +1,4 @@
-# MCS 275 Spring 2021 - David Dumas
+# MCS 275 Spring 2021 - Emily Dumas
 # Lecture 36 and 37
 """Simple chat web app"""
 from flask import Flask, url_for, request, redirect

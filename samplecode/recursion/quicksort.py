@@ -1,6 +1,6 @@
 """Quicksort: another example of divide and conquer"""
 # MCS 275 Spring 2021 Lecture 17 and Lecture 18
-# David Dumas
+# Emily Dumas
 
 def quicksort(L,start=0,end=None,depth=0):
     """Reorder elements of L so that L[start:end] is sorted."""

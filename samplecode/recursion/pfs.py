@@ -1,6 +1,6 @@
 """Paper folding sequence"""
 # MCS 275 Spring 2021 Lecture 13
-# David Dumas
+# Emily Dumas
 
 # PFS(1)   1
 # PFS(2)   110

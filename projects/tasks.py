@@ -1,7 +1,7 @@
 "Task classes for MCS 275 Spring 2021 Project 1"
 # There is also a document containing discussion of
 # this solution.  Please read that for more info.
-# David Dumas
+# Emily Dumas
 
 
 class Task:

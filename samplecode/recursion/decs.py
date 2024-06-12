@@ -1,6 +1,6 @@
 """Decorators for use in recursion discussion"""
 # MCS 275 Spring 2021
-# David Dumas
+# Emily Dumas
 
 import time
 from functools import wraps

@@ -1,5 +1,5 @@
 """Binary trees"""
-# MCS 275 Spring 2021 - David Dumas
+# MCS 275 Spring 2021 - Emily Dumas
 # Lecture 20
 
 class Node:

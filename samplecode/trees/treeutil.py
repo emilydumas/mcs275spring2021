@@ -1,5 +1,5 @@
 """Generate random binary search trees"""
-# MCS 275 Spring 2021 - David Dumas
+# MCS 275 Spring 2021 - Emily Dumas
 # NOTE: This module won't work until we add the `insert()`
 # method to class `BST` in Lecture 21.
 from binary import *

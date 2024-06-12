@@ -1,4 +1,4 @@
-# MCS 275 Spring 2021 - David Dumas
+# MCS 275 Spring 2021 - Emily Dumas
 # Lecture 38
 """Submit and vote web app"""
 from flask import Flask, url_for, request, redirect

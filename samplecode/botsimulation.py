@@ -1,5 +1,5 @@
 """Robot motion simulation with simple text-based graphics"""
-# MCS 275 Spring 2021 - David Dumas
+# MCS 275 Spring 2021 - Emily Dumas
 # Used in Lecture 5 and Lecture 6
 
 from plane import Vector,Point

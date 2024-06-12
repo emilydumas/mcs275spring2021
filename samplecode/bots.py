@@ -1,5 +1,5 @@
 """Classes representing robots in a simulation"""
-# MCS 275 Spring 2021 David Dumas
+# MCS 275 Spring 2021 Emily Dumas
 # Lectures 5 and 6
 
 from plane import Point,Vector

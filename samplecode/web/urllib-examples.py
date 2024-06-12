@@ -3,7 +3,7 @@
 
 # # urllib examples
 # 
-# ## MCS 275 Spring 2021 - Instructor David Dumas
+# ## MCS 275 Spring 2021 - Instructor Emily Dumas
 # 
 # ### Lecture 39
 

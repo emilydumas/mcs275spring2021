@@ -3,11 +3,22 @@
 
 import decs  # provides timing and other decorators
 
+@decs.count_calls
 def fib_recursive(n):
     """nth fibonacci number"""
     if n <= 1:
         return n
     return fib_recursive(n-1) + fib_recursive(n-2)
+
+CACHE = { 0:0, 1:1 }
+
+def fib_memoized(n):
+    """nth fibonacci number, recursive, but memoized"""
+    if n in CACHE:
+        return CACHE[n]
+    x = fib_memoized(n-1) + fib_memoized(n-2)
+    CACHE[n] = x  # really CACHE.__setitem__(n,x)
+    return x
 
 def fib_iterative(n):
     """nth fibonacci number (iteratively)"""
@@ -31,10 +42,15 @@ if __name__=="__main__":
     try:
         result_recursive = decs.timed(fib_recursive)(n)
     except KeyboardInterrupt:
-        print("fob_recursive({}) total time: unknown (interrupted)".format(n))
+        print("fib_recursive({}) total time: unknown (interrupted)".format(n))
         result_recursive = "unknown (interrupted)"
+    result_memoized = decs.timed(fib_memoized)(n)
     result_iterative = decs.timed(fib_iterative)(n)
 
     print("RESULTS:")
     print("fib_recursive({}) = {}".format(n,result_recursive))
+    print("fib_memoized({}) = {}".format(n,result_memoized))
     print("fib_iterative({}) = {}".format(n,result_iterative))
+
+    print("CALL COUNTS:")
+    decs.print_call_counts()

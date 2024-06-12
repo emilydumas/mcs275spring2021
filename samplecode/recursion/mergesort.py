@@ -1,6 +1,6 @@
 """Mergesort: an example of divide and conquer"""
 # MCS 275 Spring 2021 Lecture 16
-# David Dumas
+# Emily Dumas
 
 def mergesort(L):
     """Sort the list L in place.  No return value."""

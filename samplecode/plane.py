@@ -1,5 +1,5 @@
 """Points and vectors in the plane"""
-# MCS 275 Spring 2021 David Dumas
+# MCS 275 Spring 2021 Emily Dumas
 # Lectures 4 and 5
 
 # This version of the plane module includes additional features
@@ -7,7 +7,7 @@
 
 # The earlier version of this module that was created in the live
 # coding part of Lecture 4 can be found at:
-# https://github.com/daviddumas/mcs275spring2021/blob/ba4a305212a7a15a4c068368e14f74a58c81c76f/samplecode/plane.py
+# https://github.com/emilydumas/mcs275spring2021/blob/ba4a305212a7a15a4c068368e14f74a58c81c76f/samplecode/plane.py
 
 class Point:
     """A point in the plane"""
@@ -85,7 +85,7 @@ class Vector:
 
     def __rmul__(self,other):
         """Scalar multiplication (with Vector on the right)"""
-        return self*other
+        return self*other # This ultimately calls Vector.__mul__
 
     def __abs__(self):
         """Norm of the vector"""

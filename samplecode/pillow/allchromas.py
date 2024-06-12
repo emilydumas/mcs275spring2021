@@ -1,6 +1,6 @@
 """Show all chromaticities in a bitmap image"""
 # MCS 275 Spring 2021 Lecture 24
-# David Dumas
+# Emily Dumas
 
 from PIL import Image
 

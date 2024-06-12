@@ -1,5 +1,5 @@
 # MCS 275 Spring 2021 Project 3 Solution
-# David Dumas
+# Emily Dumas
 
 # Project description:
 # https://www.dumas.io/teaching/2021/spring/mcs275/nbview/projects/project3.html
